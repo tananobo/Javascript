@@ -87,6 +87,7 @@ Dino.prototype.addFact = function (fact) {
     this.facts.push(fact);
 };
 
+// compare method 1
 Dino.prototype.compareNameLength = function (name) {
     let fact = "The length of my species name is same as your name.";
     if (this.species.length > name.length) {
@@ -97,6 +98,7 @@ Dino.prototype.compareNameLength = function (name) {
     this.addFact(fact);
 };
 
+// compare method 2
 Dino.prototype.compareWeight = function (weight) {
     let fact = "Our weight is exactly same!";
     if (this.weight > weight) {
@@ -107,6 +109,7 @@ Dino.prototype.compareWeight = function (weight) {
     this.addFact(fact);
 };
 
+// compare method 3
 Dino.prototype.compareDiet = function (diet) {
     let fact = "We don't eat same type of food...";
     if (this.diet === diet) {
@@ -125,6 +128,7 @@ let dinos = dinosData.map(function (value) {
     return new Dino(species, weight, diet, fact);
 });
 
+// procedure aftrer clincking button
 document.getElementById("btn").addEventListener("click", function(){
 
     // Create Human Object
@@ -142,13 +146,14 @@ document.getElementById("btn").addEventListener("click", function(){
             "image" : "images/human.png"
         }
     })();
-
+    // add new fact to every dinos and create tiles on DOM
     for (let i = 0; i < 8; i++){
         dinos[i].compareNameLength(human.fact);
         dinos[i].compareWeight(human.weight);
         dinos[i].compareDiet(human.diet);
         let fact =
         dinos[i].facts[Math.floor(Math.random()*dinos[i].facts.length)];
+        // in case of birds
         if (dinos[i].weight < 1) {
             fact = "All birds are Dinosaurs.";
         }
@@ -157,14 +162,17 @@ document.getElementById("btn").addEventListener("click", function(){
         gridItemDiv = getGridItem(dinosData[i].species, imgUrl, fact)
         document.getElementById("grid").appendChild(gridItemDiv);
 
+        // add human tile
         if (i===3){
             gridItemDiv = getGridItem(human.species, human.image, human.fact)
             document.getElementById("grid").appendChild(gridItemDiv);
         };
     };
+    // Remove form from screen
     document.getElementById("dino-compare").style.display = "none";
 })
 
+// define to create grid tiles as generic code
 function getGridItem(species, imgUrl, fact){
     let gridItemDiv = document.createElement("div");
         gridItemDiv.className = "grid-item";
