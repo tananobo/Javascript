@@ -42,7 +42,8 @@ const dinosData =  [
         "diet": "herbavor",
         "where": "North America, Europe, Asia",
         "when": "Late Jurasic to Early Cretaceous",
-        "fact": "The Stegosaurus had between 17 and 22 seperate places and flat spines."
+        "fact":
+        "The Stegosaurus had between 17 and 22 seperate places and flat spines."
     },
     {
         "species": "Elasmosaurus",
@@ -71,48 +72,89 @@ const dinosData =  [
         "when": "Holocene",
         "fact": "All birds are living dinosaurs."
     }
-]
-    
+];
+
 // Create Dino Constructor
-function Dino(species, fact) {
+function Dino(species, weight, diet, fact) {
     this.species = species;
-    this.fact = fact;
+    this.weight = weight;
+    this.diet = diet;
+    this.facts = [fact];
     this.image = "images/" + species.toLowerCase() + ".png";
 }
 
-    // Create Dino Objects
+Dino.prototype.addFact = function (fact) {
+    this.facts.push(fact);
+};
 
-    // Create Dino Compare Method 1
-    // NOTE: Weight in JSON file is in lbs, height in inches. 
+Dino.prototype.compareNameLength = function (name) {
+    let fact = "The length of my species name is same as your name.";
+    if (this.species.length > name.length) {
+        fact = "The length of my species name is longer than your name.";
+    } else if (this.species.length < name.length) {
+        fact = "The length of my species name is shorter than your name.";
+    }
+    this.addFact(fact);
+};
 
-    
-    // Create Dino Compare Method 2
-    // NOTE: Weight in JSON file is in lbs, height in inches.
+Dino.prototype.compareWeight = function (weight) {
+    let fact = "Our weight is exactly same!";
+    if (this.weight > weight) {
+        fact = "I'm heavier than you!";
+    } else if (this.weight < weight) {
+        fact = "I'm lighter than you...";
+    }
+    this.addFact(fact);
+};
 
-    
-    // Create Dino Compare Method 3
-    // NOTE: Weight in JSON file is in lbs, height in inches.
+Dino.prototype.compareDiet = function (diet) {
+    let fact = "We don't eat same type of food...";
+    if (this.diet === diet) {
+        fact = "We eat same type of food!";
+    }
+    this.addFact(fact);
+};
 
 
-// On button click, prepare and display infographic
-document.getElementById("btn").addEventListener('click', function(){
-    
+// Create Dino Objects
+let dinos = dinosData.map(function (value) {
+    const species = value.species;
+    const weight = value.weight;
+    const diet = value.diet;
+    const fact = value.fact;
+    return new Dino(species, weight, diet, fact);
+});
+
+document.getElementById("btn").addEventListener("click", function(){
+
     // Create Human Object
     const human = (function(){
         let name = document.getElementById("name");
         let feet = document.getElementById("feet");
         let height = document.getElementById("height");
         let weight = document.getElementById("weight");
+        let diet = document.getElementById("diet");
         return {
             "species" : "human",
+            "weight" : weight.value,
+            "diet" : diet.value,
             "fact" : name.value,
-            "image" : "images/human.png" 
+            "image" : "images/human.png"
         }
     })();
 
     for (let i = 0; i < 8; i++){
-        imgUrl = "images/" + dinosData[i]["species"].toLowerCase() + ".png"
-        gridItemDiv = getGridItem(dinosData[i].species, imgUrl, dinosData[i].fact)
+        dinos[i].compareNameLength(human.fact);
+        dinos[i].compareWeight(human.weight);
+        dinos[i].compareDiet(human.diet);
+        let fact =
+        dinos[i].facts[Math.floor(Math.random()*dinos[i].facts.length)];
+        if (dinos[i].weight < 1) {
+            fact = "All birds are Dinosaurs.";
+        }
+        const imgUrl =
+        "images/" + dinosData[i]["species"].toLowerCase() + ".png"
+        gridItemDiv = getGridItem(dinosData[i].species, imgUrl, fact)
         document.getElementById("grid").appendChild(gridItemDiv);
 
         if (i===3){
@@ -125,7 +167,7 @@ document.getElementById("btn").addEventListener('click', function(){
 
 function getGridItem(species, imgUrl, fact){
     let gridItemDiv = document.createElement("div");
-        gridItemDiv.className = "griditem";
+        gridItemDiv.className = "grid-item";
 
         //add species
         let speciesDiv = document.createElement("h3");
@@ -141,5 +183,5 @@ function getGridItem(species, imgUrl, fact){
         factDiv.innerText = fact;
         gridItemDiv.appendChild(factDiv);
 
-        return gridItemDiv
+        return gridItemDiv;
 }
